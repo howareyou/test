@@ -1,3 +1,6 @@
+#reference: https://github.com/dash0002/HTMLTestRunner
+#author: dash0002
+
 __version__ = "1.0.2"
 
 from datetime import datetime
@@ -662,7 +665,6 @@ class HTMLTestRunner(Template_mixin):
                 name = "%s.%s" % (cls.__module__, cls.__name__)
             doc = cls.__doc__ and cls.__doc__.split("\n")[0] or ""
             desc = doc and '%s: %s' % (name, doc) or name
-            print(self.REPORT_CLASS_TMPL)
             di = dict(style = ne > 0 and 'errorClass' or nf > 0 and 'failClass' or ns > 0 and 'skipClass' or 'passClass',
                 desc = desc,
                 count = np+ns+nf+ne,
@@ -670,7 +672,6 @@ class HTMLTestRunner(Template_mixin):
                 fail = nf,
                 error = ne,
                 cid = 'c%s' % (cid+1))
-            print(di)
             row = self.REPORT_CLASS_TMPL % dict(
                 style = ne > 0 and 'errorClass' or nf > 0 and 'failClass' or ns > 0 and 'skipClass' or 'passClass',
                 desc = desc,
@@ -681,7 +682,6 @@ class HTMLTestRunner(Template_mixin):
                 error = ne,
                 cid = 'c%s' % (cid+1)
             )
-            print(row)
             rows.append(row)
 
             for tid, (n,t,o,e) in enumerate(cls_results):
