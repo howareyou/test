@@ -17,7 +17,7 @@ class BaiduPage(unittest.TestCase):
 
     def test_baidu_search(self):
         "Lanuch baidu home page and search keywords"
-        self.driver.find_element_by_id("kw").send_keys('selenium')
+        self.driver.find_element_by_id("kw").send_keys('AKQA')
         sleep(1)
         self.driver.find_element_by_id("su").click()
         sleep(1)

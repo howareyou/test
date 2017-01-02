@@ -51,7 +51,9 @@ stderr_redirector = OutputRedirector(sys.stderr)
 class Template_mixin(object):
     """
     Define a HTML template for report customerization and generation.
+
     Overall structure of an HTML report
+
     HTML
     +------------------------+
     |<html>                  |
@@ -111,6 +113,7 @@ class Template_mixin(object):
 <body>
 <script language="javascript" type="text/javascript"><!--
 output_list = Array();
+
 /* level - 0:Summary; 1:Failed; 2:All */
 function showCase(level) {
     trs = document.getElementsByTagName("tr");
@@ -135,6 +138,8 @@ function showCase(level) {
         }
     }
 }
+
+
 function showClassDetail(cid, count) {
     var id_list = Array(count);
     var toHide = 1;
@@ -162,6 +167,8 @@ function showClassDetail(cid, count) {
         }
     }
 }
+
+
 function showTestDetail(div_id){
     var details_div = document.getElementById(div_id)
     var displayState = details_div.style.display
@@ -174,12 +181,15 @@ function showTestDetail(div_id){
         details_div.style.display = 'none'
     }
 }
+
+
 function html_escape(s) {
     s = s.replace(/&/g,'&amp;');
     s = s.replace(/</g,'&lt;');
     s = s.replace(/>/g,'&gt;');
     return s;
 }
+
 /* obsoleted by detail in <div>
 function showOutput(id, name) {
     var w = window.open("", //url
@@ -195,9 +205,11 @@ function showOutput(id, name) {
 }
 */
 --></script>
+
 %(heading)s
 %(report)s
 %(ending)s
+
 </body>
 </html>
 """
@@ -215,6 +227,7 @@ function showOutput(id, name) {
 body        { font-family: verdana, arial, helvetica, sans-serif; font-size: 80%; }
 table       { font-size: 100%; }
 pre         { }
+
 /* -- heading ---------------------------------------------------------------------- */
 h1 {
 	font-size: 16pt;
@@ -224,20 +237,25 @@ h1 {
     margin-top: 0ex;
     margin-bottom: 1ex;
 }
+
 .heading .attribute {
     margin-top: 1ex;
     margin-bottom: 0;
 }
+
 .heading .description {
     margin-top: 4ex;
     margin-bottom: 6ex;
 }
+
 /* -- css div popup ------------------------------------------------------------------------ */
 a.popup_link {
 }
+
 a.popup_link:hover {
     color: red;
 }
+
 .popup_window {
     display: none;
     position: relative;
@@ -251,6 +269,7 @@ a.popup_link:hover {
     font-size: 8pt;
     width: 500px;
 }
+
 }
 /* -- report ------------------------------------------------------------------------ */
 #show_detail_line {
@@ -282,9 +301,12 @@ a.popup_link:hover {
 .errorCase  { color: #c00; font-weight: bold; }
 .hiddenRow  { display: none; }
 .testcase   { margin-left: 2em; }
+
+
 /* -- ending ---------------------------------------------------------------------- */
 #ending {
 }
+
 </style>
 """
 
@@ -299,6 +321,7 @@ a.popup_link:hover {
 %(parameters)s
 <p class='description'>%(description)s</p>
 </div>
+
 """ # variables: (title, parameters, description)
 
     HEADING_ATTRIBUTE_TMPL = """<p class='attribute'><strong>%(name)s:</strong> %(value)s</p>
@@ -364,9 +387,11 @@ a.popup_link:hover {
 <tr id='%(tid)s' class='%(Class)s'>
     <td class='%(style)s'><div class='testcase'>%(desc)s</div></td>
     <td colspan='5' align='center'>
+
     <!--css div popup start-->
     <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_%(tid)s')" >
         %(status)s</a>
+
     <div id='div_%(tid)s' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
         <a onfocus='this.blur();' onclick="document.getElementById('div_%(tid)s').style.display = 'none' " >
@@ -377,6 +402,7 @@ a.popup_link:hover {
         </pre>
     </div>
     <!--css div popup end-->
+
     </td>
 </tr>
 """ # variables: (tid, Class, style, desc, status)
@@ -636,16 +662,26 @@ class HTMLTestRunner(Template_mixin):
                 name = "%s.%s" % (cls.__module__, cls.__name__)
             doc = cls.__doc__ and cls.__doc__.split("\n")[0] or ""
             desc = doc and '%s: %s' % (name, doc) or name
-
-            row = self.REPORT_CLASS_TMPL % dict(
-                style = ne > 0 and 'errorClass' or nf > 0 and 'failClass' or ns > 0 and 'skipClass' or 'passClass',
+            print(self.REPORT_CLASS_TMPL)
+            di = dict(style = ne > 0 and 'errorClass' or nf > 0 and 'failClass' or ns > 0 and 'skipClass' or 'passClass',
                 desc = desc,
                 count = np+ns+nf+ne,
                 Pass = np,
                 fail = nf,
                 error = ne,
-                cid = 'c%s' % (str(cid+1)),
+                cid = 'c%s' % (cid+1))
+            print(di)
+            row = self.REPORT_CLASS_TMPL % dict(
+                style = ne > 0 and 'errorClass' or nf > 0 and 'failClass' or ns > 0 and 'skipClass' or 'passClass',
+                desc = desc,
+                count = np+ns+nf+ne,
+                Pass = np,
+                skip = ns,
+                fail = nf,
+                error = ne,
+                cid = 'c%s' % (cid+1)
             )
+            print(row)
             rows.append(row)
 
             for tid, (n,t,o,e) in enumerate(cls_results):
